@@ -1,4 +1,5 @@
-QT = core
+QT = core \
+    widgets
 
 CONFIG += c++17 cmdline
 QMAKE_CXXFLAGS += -std=c++17
@@ -8,7 +9,8 @@ QMAKE_CXXFLAGS += -std=c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        main.cpp
+        main.cpp \
+        welcomewindow.cpp
 
 TRANSLATIONS += \
     Snake_ru_RU.ts
@@ -19,3 +21,9 @@ CONFIG += embed_translations
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+HEADERS += \
+    welcomewindow.h
+
+RESOURCES += \
+    resources.qrc
