@@ -2,22 +2,36 @@
 #ifndef WELCOMEWINDOW_H
 #define WELCOMEWINDOW_H
 
-#include <QMainWindow>
-#include <QWidget>
 #include <QPushButton>
+#include <QVBoxLayout>
+#include <QApplication>
+#include <QKeyEvent>
+#include "settingwindow.h"
+#include "styledwidget.h"
+#include "musicplayer.h"
 
-class WelcomeWindow : public QMainWindow
+class WelcomeWindow : public StyledWidget
 {
     Q_OBJECT
+
 public:
-    explicit WelcomeWindow(QWidget *parent = nullptr);
+    explicit WelcomeWindow(const int delay = 400, StyledWidget *parent = nullptr);
+    ~WelcomeWindow();
 
 private slots:
     void onPlayButtonClicked();
     void onSettingsButtonClicked();
 
 private:
-    QWidget *centralWidget;
+    QPushButton *playButton;
+    QPushButton *settingsButton;
+    QPushButton *exitButton;
+    QVBoxLayout *vbox;
+
+    SettingWindow *settingWindow;
+    MusicPlayer *musicPlayer;
+
+    int delay_;
 };
 
 #endif // WELCOMEWINDOW_H

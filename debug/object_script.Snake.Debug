@@ -1,0 +1,12 @@
+debug/gameover.o
+debug/gamewindow.o
+debug/main.o
+debug/musicplayer.o
+debug/settingwindow.o
+debug/styledwidget.o
+debug/welcomewindow.o
+debug/qrc_resources.o
+debug/qrc_qmake_qmake_qm_files.o
+debug/moc_musicplayer.o
+debug/moc_settingwindow.o
+debug/moc_welcomewindow.o

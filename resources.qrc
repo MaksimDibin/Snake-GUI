@@ -1,5 +1,22 @@
 <RCC>
     <qresource prefix="/new/icons">
-        <file>icon.jpg</file>
+        <file>snakeHeadUp.png</file>
+        <file>body.png</file>
+        <file>snakeHeadDown.png</file>
+        <file>snakeHeadLeft.png</file>
+        <file>snakeHeadRight.png</file>
+        <file>cursor.png</file>
+        <file>icon.ico</file>
+        <file>mouse.png</file>
+        <file>grass.jpg</file>
+    </qresource>
+    <qresource prefix="/new/fonts">
+        <file>FerdinandFont-Regular.ttf</file>
+    </qresource>
+    <qresource prefix="/new/sounds">
+        <file>gameOverSound.wav</file>
+        <file>eatSound.wav</file>
+        <file>backgroundWelcomeWindowMusic.wav</file>
+        <file>backgroundGameWindowMusic.wav</file>
     </qresource>
 </RCC>

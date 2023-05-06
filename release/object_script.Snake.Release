@@ -1,0 +1,12 @@
+release/gameover.o
+release/gamewindow.o
+release/main.o
+release/musicplayer.o
+release/settingwindow.o
+release/styledwidget.o
+release/welcomewindow.o
+release/qrc_resources.o
+release/qrc_qmake_qmake_qm_files.o
+release/moc_musicplayer.o
+release/moc_settingwindow.o
+release/moc_welcomewindow.o

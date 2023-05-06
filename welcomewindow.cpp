@@ -1,47 +1,70 @@
-
 #include "welcomewindow.h"
+#include "gamewindow.h"
 
-WelcomeWindow::WelcomeWindow(QWidget *parent) : QMainWindow(parent)
+GameWindow *gameWindow;
+
+WelcomeWindow::WelcomeWindow(const int delay, StyledWidget *parent) : StyledWidget(parent), delay_(delay)
 {
-    QIcon icon(":/new/icons/icon.jpg");
+    vbox = new QVBoxLayout(this);
 
-    this->setWindowIcon(icon);
+    playButton = new QPushButton("Играть", this);
+    playButton->setFont(this->getFont());
+    playButton->setStyleSheet(this->getStyledButton());
+    playButton->setFocusPolicy(Qt::ClickFocus);
+    connect(playButton, &QPushButton::clicked, this, &WelcomeWindow::onPlayButtonClicked);
 
-    QFont font = this->font();
+    settingsButton = new QPushButton("Настройки", this);
+    settingsButton->setFont(this->getFont());
+    settingsButton->setStyleSheet(this->getStyledButton());
+    settingsButton->setFocusPolicy(Qt::ClickFocus);
+    connect(settingsButton, &QPushButton::clicked, this, &WelcomeWindow::onSettingsButtonClicked);
 
-    font.setPointSize(font.pointSize() + 6);
+    exitButton = new QPushButton("Выход", this);
+    exitButton->setFont(this->getFont());
+    exitButton->setStyleSheet(this->getStyledButton());
+    exitButton->setFocusPolicy(Qt::ClickFocus);
+    connect(exitButton, &QPushButton::clicked, QApplication::instance(), &QApplication::quit);
 
-    this->setFont(font);
+    vbox->setAlignment(Qt::AlignCenter);
+    vbox->setSpacing(50);
+    vbox->addStretch(1);
+    vbox->addWidget(playButton);
+    vbox->addWidget(settingsButton);
+    vbox->addWidget(exitButton);
+    vbox->addStretch(1);
 
-    centralWidget = new QWidget(this);
+    QPixmap cursorPixmap(":/new/icons/cursor.png");
+    QCursor customCursor(cursorPixmap.scaled(35, 35));
+    setCursor(customCursor);
 
-    setCentralWidget(centralWidget);
+    setWindowFlags(Qt::FramelessWindowHint);
 
-    this->setStyleSheet("background-color: green;");
+    musicPlayer = new MusicPlayer();
+//    musicPlayer->playBackgroundWelcomeWindowMusic();
 
-    QPushButton *playButton = new QPushButton("Играть", centralWidget);
+    this->show();
+}
 
-    playButton->setGeometry(200, 150, 200, 100);
-
-    playButton->setStyleSheet("background-color: grey;");
-
-    QObject::connect(playButton, &QPushButton::clicked, this, &WelcomeWindow::onPlayButtonClicked);
-
-    QPushButton *settingsButton = new QPushButton("Настройки", centralWidget);
-
-    settingsButton->setGeometry(200, 350, 200, 100);
-
-    settingsButton->setStyleSheet("background-color: grey;");
-
-    QObject::connect(settingsButton, &QPushButton::clicked, this, &WelcomeWindow::onSettingsButtonClicked);
+WelcomeWindow::~WelcomeWindow()
+{
+    delete playButton;
+    delete settingsButton;
+    delete exitButton;
+    delete vbox;
+    delete gameWindow;
+    delete musicPlayer;
 }
 
 void WelcomeWindow::onPlayButtonClicked()
 {
+    this->close();
 
+    gameWindow = new GameWindow(delay_);
 }
 
 void WelcomeWindow::onSettingsButtonClicked()
 {
+    this->close();
 
+    settingWindow = new SettingWindow(delay_);
 }

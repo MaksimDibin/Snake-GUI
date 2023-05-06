@@ -1,7 +1,10 @@
 QT = core \
     widgets
 
-CONFIG += c++17 cmdline
+QT += multimedia
+
+RC_ICONS = icon.ico
+CONFIG += c++17
 QMAKE_CXXFLAGS += -std=c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -9,11 +12,14 @@ QMAKE_CXXFLAGS += -std=c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        gameover.cpp \
+        gamewindow.cpp \
         main.cpp \
+        musicplayer.cpp \
+        settingwindow.cpp \
+        styledwidget.cpp \
         welcomewindow.cpp
 
-TRANSLATIONS += \
-    Snake_ru_RU.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 
@@ -23,7 +29,13 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    gameover.h \
+    gamewindow.h \
+    musicplayer.h \
+    settingwindow.h \
+    styledwidget.h \
     welcomewindow.h
 
 RESOURCES += \
     resources.qrc
+
