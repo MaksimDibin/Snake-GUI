@@ -4,20 +4,21 @@
 
 #include <QMediaPlayer>
 #include <QAudioOutput>
-//#include <QObject>
 
 class MusicPlayer
 {
-//    Q_OBJECT
 public:
-//    explicit MusicPlayer(QObject* parent = nullptr);
-      explicit MusicPlayer();
+    explicit MusicPlayer();
     ~MusicPlayer();
 
     void playBackgroundWelcomeWindowMusic();
     void playBackgroundGameWindowMusic();
     void playEatSound();
     void playGameOverSound();
+    void stopBackgroundWelcomeWindowMusic();
+    void stopBackgroundGameWindowMusic();
+    void stopEatSound();
+    void stopGameOverSound();
 
 private:
     QMediaPlayer *m_backgroundWelcomeWindowMusic;

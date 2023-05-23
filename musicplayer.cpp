@@ -6,7 +6,7 @@ MusicPlayer::MusicPlayer()
     m_backgroundWelcomeWindowMusic = new QMediaPlayer;
     audioOutput = new QAudioOutput;
     m_backgroundWelcomeWindowMusic->setAudioOutput(audioOutput);
-    m_backgroundWelcomeWindowMusic->setSource(QUrl::fromLocalFile(":/new/sounds/backgroundWelcomeWindowMusic.wav"));
+    m_backgroundWelcomeWindowMusic->setSource(QUrl("qrc:/new/sounds/backgroundWelcomeWindowMusic.wav"));
     audioOutput->setVolume(100);
 
     if (m_backgroundWelcomeWindowMusic->isPlaying()) {
@@ -16,13 +16,13 @@ MusicPlayer::MusicPlayer()
     }
 
     m_backgroundGameWindowMusic = new QMediaPlayer;
-    m_backgroundGameWindowMusic->setSource(QUrl::fromLocalFile(":/new/sounds/backgroundGameWindowMusic.wav"));
+    m_backgroundGameWindowMusic->setSource(QUrl("qrc:/new/sounds/backgroundGameWindowMusic.wav"));
 
     m_eatSound = new QMediaPlayer;
-    m_eatSound->setSource(QUrl(":/new/sounds/eatSound.wav"));
+    m_eatSound->setSource(QUrl("qrc:/new/sounds/eatSound.wav"));
 
     m_gameOverSound = new QMediaPlayer;
-    m_gameOverSound->setSource(QUrl(":/new/sounds/gameOverSound.wav"));
+    m_gameOverSound->setSource(QUrl("qrc:/new/sounds/gameOverSound.wav"));
 }
 
 MusicPlayer::~MusicPlayer()
@@ -35,7 +35,7 @@ MusicPlayer::~MusicPlayer()
 
 void MusicPlayer::playBackgroundWelcomeWindowMusic()
 {
-    m_backgroundWelcomeWindowMusic->play();
+        m_backgroundWelcomeWindowMusic->play();
 }
 
 void MusicPlayer::playBackgroundGameWindowMusic()
@@ -51,4 +51,24 @@ void MusicPlayer::playEatSound()
 void MusicPlayer::playGameOverSound()
 {
     m_gameOverSound->play();
+}
+
+void MusicPlayer::stopBackgroundWelcomeWindowMusic()
+{
+    m_backgroundWelcomeWindowMusic->stop();
+}
+
+void MusicPlayer::stopBackgroundGameWindowMusic()
+{
+    m_backgroundGameWindowMusic->stop();
+}
+
+void MusicPlayer::stopEatSound()
+{
+    m_eatSound->stop();
+}
+
+void MusicPlayer::stopGameOverSound()
+{
+    m_gameOverSound->stop();
 }

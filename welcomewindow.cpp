@@ -40,7 +40,7 @@ WelcomeWindow::WelcomeWindow(const int delay, StyledWidget *parent) : StyledWidg
     setWindowFlags(Qt::FramelessWindowHint);
 
     musicPlayer = new MusicPlayer();
-//    musicPlayer->playBackgroundWelcomeWindowMusic();
+    musicPlayer->playBackgroundWelcomeWindowMusic();
 
     this->show();
 }
@@ -58,6 +58,7 @@ WelcomeWindow::~WelcomeWindow()
 void WelcomeWindow::onPlayButtonClicked()
 {
     this->close();
+    musicPlayer->stopBackgroundWelcomeWindowMusic();
 
     gameWindow = new GameWindow(delay_);
 }
@@ -65,6 +66,6 @@ void WelcomeWindow::onPlayButtonClicked()
 void WelcomeWindow::onSettingsButtonClicked()
 {
     this->close();
-
+    musicPlayer->stopBackgroundWelcomeWindowMusic();
     settingWindow = new SettingWindow(delay_);
 }
