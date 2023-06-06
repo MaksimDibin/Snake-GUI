@@ -3,7 +3,7 @@
 
 GameWindow *gameWindow;
 
-WelcomeWindow::WelcomeWindow(const int delay, StyledWidget *parent) : StyledWidget(parent), delay_(delay)
+WelcomeWindow::WelcomeWindow(int delay, MusicPlayer *music, StyledWidget *parent) : StyledWidget(parent), _music(music), delay_(delay)
 {
     vbox = new QVBoxLayout(this);
 
@@ -39,9 +39,6 @@ WelcomeWindow::WelcomeWindow(const int delay, StyledWidget *parent) : StyledWidg
 
     setWindowFlags(Qt::FramelessWindowHint);
 
-    musicPlayer = new MusicPlayer();
-    musicPlayer->playBackgroundWelcomeWindowMusic();
-
     this->show();
 }
 
@@ -52,20 +49,21 @@ WelcomeWindow::~WelcomeWindow()
     delete exitButton;
     delete vbox;
     delete gameWindow;
-    delete musicPlayer;
+    delete _music;
 }
 
 void WelcomeWindow::onPlayButtonClicked()
 {
     this->close();
-    musicPlayer->stopBackgroundWelcomeWindowMusic();
 
-    gameWindow = new GameWindow(delay_);
+    _music->stopBackgroundWelcomeWindowMusic();
+
+    gameWindow = new GameWindow(delay_, _music);
 }
 
 void WelcomeWindow::onSettingsButtonClicked()
 {
     this->close();
-    musicPlayer->stopBackgroundWelcomeWindowMusic();
-    settingWindow = new SettingWindow(delay_);
+
+    settingWindow = new SettingWindow(delay_, _music);
 }

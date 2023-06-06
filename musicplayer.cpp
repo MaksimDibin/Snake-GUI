@@ -3,26 +3,28 @@
 
 MusicPlayer::MusicPlayer()
 {
-    m_backgroundWelcomeWindowMusic = new QMediaPlayer;
-    audioOutput = new QAudioOutput;
-    m_backgroundWelcomeWindowMusic->setAudioOutput(audioOutput);
-    m_backgroundWelcomeWindowMusic->setSource(QUrl("qrc:/new/sounds/backgroundWelcomeWindowMusic.wav"));
-    audioOutput->setVolume(100);
+    audioOutputWelcome = new QAudioOutput;
+    audioOutputGame = new QAudioOutput;
+    audioOutputEat = new QAudioOutput;
+    audioOutputGameOver = new QAudioOutput;
 
-    if (m_backgroundWelcomeWindowMusic->isPlaying()) {
-        qDebug() << "File has been loaded and is ready to play.";
-    } else {
-        qDebug() << "Error loading file:" << m_backgroundWelcomeWindowMusic->errorString();
-    }
+    m_backgroundWelcomeWindowMusic = new QMediaPlayer;
+    m_backgroundWelcomeWindowMusic->setAudioOutput(audioOutputWelcome);
+    m_backgroundWelcomeWindowMusic->setSource(QUrl("qrc:/new/sounds/backgroundWelcomeWindowMusic.wav"));
 
     m_backgroundGameWindowMusic = new QMediaPlayer;
+    m_backgroundGameWindowMusic->setAudioOutput(audioOutputGame);
     m_backgroundGameWindowMusic->setSource(QUrl("qrc:/new/sounds/backgroundGameWindowMusic.wav"));
 
     m_eatSound = new QMediaPlayer;
+    m_eatSound->setAudioOutput(audioOutputEat);
     m_eatSound->setSource(QUrl("qrc:/new/sounds/eatSound.wav"));
 
     m_gameOverSound = new QMediaPlayer;
+    m_gameOverSound->setAudioOutput(audioOutputGameOver);
     m_gameOverSound->setSource(QUrl("qrc:/new/sounds/gameOverSound.wav"));
+
+
 }
 
 MusicPlayer::~MusicPlayer()
@@ -31,11 +33,15 @@ MusicPlayer::~MusicPlayer()
     delete m_backgroundGameWindowMusic;
     delete m_eatSound;
     delete m_gameOverSound;
+    delete audioOutputWelcome;
+    delete audioOutputGame;
+    delete audioOutputEat;
+    delete audioOutputGameOver;
 }
 
 void MusicPlayer::playBackgroundWelcomeWindowMusic()
 {
-        m_backgroundWelcomeWindowMusic->play();
+    m_backgroundWelcomeWindowMusic->play();
 }
 
 void MusicPlayer::playBackgroundGameWindowMusic()

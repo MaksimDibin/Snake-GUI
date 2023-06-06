@@ -1,7 +1,9 @@
 #include "gamewindow.h"
 
-GameWindow::GameWindow(const int delay, StyledWidget *parent) : StyledWidget(parent), delay_(delay)
+GameWindow::GameWindow(const int delay, MusicPlayer *music, StyledWidget *parent) : StyledWidget(parent), _music(music), delay_(delay)
 {
+
+    _music->playBackgroundGameWindowMusic();
 
     loadImages();
 
@@ -30,6 +32,7 @@ GameWindow::GameWindow(const int delay, StyledWidget *parent) : StyledWidget(par
 GameWindow::~GameWindow()
 {
     delete gameOver;
+    delete _music;
 }
 
 void GameWindow::paintEvent(QPaintEvent * pe)
@@ -54,7 +57,9 @@ void GameWindow::paintEvent(QPaintEvent * pe)
 
         this->close();
 
-        gameOver = new GameOver(delay_);
+        _music->stopBackgroundGameWindowMusic();
+
+        gameOver = new GameOver(delay_, _music);
     }
 }
 
@@ -66,7 +71,7 @@ void GameWindow::timerEvent(QTimerEvent *te)
     checkCollision();
     checkMouse();
 
-    update();
+    this->update();
 }
 
 void GameWindow::keyPressEvent(QKeyEvent *ke)
@@ -199,14 +204,14 @@ void GameWindow::locateMouse()
     while (!nCheck)
     {
         int counter = 0;
-        x = std::mt19937(std::random_device{}())() % (WIDTH / OBJECT_SIZE);
-        y = std::mt19937(std::random_device{}())() % (HEIGHT / OBJECT_SIZE);
+        x = mt19937(random_device{}())() % (WIDTH / OBJECT_SIZE);
+        y = mt19937(random_device{}())() % (HEIGHT / OBJECT_SIZE);
 
-        if(head.x() != x && head.y() != y)
+        if(head.x() != x || head.y() != y)
         {
             for (const auto& dot : dots)
             {
-                if(dot.y() != y && dot.x() != x)
+                if(dot.y() != y || dot.x() != x)
                 {
                     ++counter;
                 }
@@ -218,7 +223,9 @@ void GameWindow::locateMouse()
         }
 
         if (counter == dots.size())
+        {
             nCheck = true;
+        }
     }
 
     mouse.setX(x);

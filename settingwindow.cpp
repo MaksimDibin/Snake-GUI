@@ -4,7 +4,7 @@
 
 WelcomeWindow *welcomeWindow;
 
-SettingWindow::SettingWindow(const int delay, StyledWidget *parent) : StyledWidget(parent), delay_(delay)
+SettingWindow::SettingWindow(const int delay, MusicPlayer *music, StyledWidget *parent) : StyledWidget(parent), delay_(delay), _music(music)
 {
     setDelay(delay);
 
@@ -22,15 +22,15 @@ SettingWindow::SettingWindow(const int delay, StyledWidget *parent) : StyledWidg
     difficultyComboBox->addItem("Средне");
     difficultyComboBox->addItem("Сложно");
 
-    if (delay_ == 400)
+    if (delay_ == easyLevel)
     {
         difficultyComboBox->setCurrentIndex(0);
     }
-    else if (delay_ == 200)
+    else if (delay_ == middleLevel)
     {
         difficultyComboBox->setCurrentIndex(1);
     }
-    else if (delay_ == 100)
+    else if (delay_ == hardleLevel)
     {
         difficultyComboBox->setCurrentIndex(2);
     }
@@ -64,6 +64,7 @@ SettingWindow::~SettingWindow()
     delete vbox;
     delete difficultyComboBox;
     delete welcomeWindow;
+    delete _music;
 }
 
 int SettingWindow::getDelay() const
@@ -85,16 +86,18 @@ void SettingWindow::onApplyButtonClicked()
 
     if (currentText == "Легко")
     {
-        setDelay(400);
-    } else if (currentText == "Средне")
+        setDelay(easyLevel);
+    }
+    else if (currentText == "Средне")
     {
-        setDelay(200);
-    } else if (currentText == "Сложно")
+        setDelay(middleLevel);
+    }
+    else if (currentText == "Сложно")
     {
-        setDelay(100);
+        setDelay(hardleLevel);
     }
 
     this->close();
 
-    welcomeWindow = new WelcomeWindow(getDelay());
+    welcomeWindow = new WelcomeWindow(getDelay(), _music);
 }

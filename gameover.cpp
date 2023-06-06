@@ -1,7 +1,9 @@
 #include "gameover.h"
 
-GameOver::GameOver(const int delay, StyledWidget* parent) : StyledWidget(parent), delay_(delay)
+GameOver::GameOver(const int delay, MusicPlayer *music, StyledWidget* parent) : StyledWidget(parent), _music(music), delay_(delay)
 {
+    _music->playGameOverSound();
+
 	QTimer::singleShot(1, this, &GameOver::showNextLetter);
 
 	setCursor(Qt::BlankCursor);
@@ -14,6 +16,7 @@ GameOver::GameOver(const int delay, StyledWidget* parent) : StyledWidget(parent)
 GameOver::~GameOver()
 {
 	delete welcomeWindow;
+    delete _music;
 }
 
 void GameOver::paintEvent(QPaintEvent* pe)
@@ -43,10 +46,14 @@ void GameOver::showNextLetter()
 	}
 	else
 	{
-		this_thread::sleep_for(chrono::milliseconds(500));
+        this_thread::sleep_for(chrono::milliseconds(1500));
 
 		this->hide();
 
-		welcomeWindow = new WelcomeWindow(delay_);
+        _music->stopGameOverSound();
+
+        _music->playBackgroundWelcomeWindowMusic();
+
+        welcomeWindow = new WelcomeWindow(delay_, _music);
 	}
 }

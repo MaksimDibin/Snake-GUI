@@ -16,6 +16,7 @@ SOURCES += \
         gamewindow.cpp \
         main.cpp \
         musicplayer.cpp \
+        setting.cpp \
         settingwindow.cpp \
         styledwidget.cpp \
         welcomewindow.cpp
@@ -32,10 +33,14 @@ HEADERS += \
     gameover.h \
     gamewindow.h \
     musicplayer.h \
+    setting.h \
     settingwindow.h \
     styledwidget.h \
     welcomewindow.h
 
 RESOURCES += \
     resources.qrc
+
+FORMS += \
+    setting.ui
 

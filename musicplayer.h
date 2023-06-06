@@ -25,7 +25,10 @@ private:
     QMediaPlayer *m_backgroundGameWindowMusic;
     QMediaPlayer *m_eatSound;
     QMediaPlayer *m_gameOverSound;
-    QAudioOutput *audioOutput;
+    QAudioOutput *audioOutputWelcome;
+    QAudioOutput *audioOutputGame;
+    QAudioOutput *audioOutputEat;
+    QAudioOutput *audioOutputGameOver;
 };
 
 #endif // MUSICPLAYER_H

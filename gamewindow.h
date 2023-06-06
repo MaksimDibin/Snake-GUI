@@ -9,6 +9,7 @@
 #include <QList>
 #include "gameover.h"
 #include "styledwidget.h"
+#include "musicplayer.h"
 
 enum Move
 {
@@ -22,7 +23,7 @@ class GameWindow : public StyledWidget
 {
 
 public:
-    explicit GameWindow(const int delay, StyledWidget *parent = nullptr);
+    explicit GameWindow(const int delay, MusicPlayer *music = nullptr, StyledWidget *parent = nullptr);
     ~GameWindow();
     void start();
 
@@ -35,6 +36,7 @@ private:
     QImage snakeHeadRight;
 
     GameOver *gameOver;
+    MusicPlayer *_music;
 
     static const int OBJECT_SIZE = 30;
     static const int HEIGHT = 600;

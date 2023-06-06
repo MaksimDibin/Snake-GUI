@@ -15,7 +15,7 @@ class WelcomeWindow : public StyledWidget
     Q_OBJECT
 
 public:
-    explicit WelcomeWindow(const int delay = 400, StyledWidget *parent = nullptr);
+    explicit WelcomeWindow(int delay = 300, MusicPlayer *musicPlayer = nullptr, StyledWidget *parent = nullptr);
     ~WelcomeWindow();
 
 private slots:
@@ -27,9 +27,8 @@ private:
     QPushButton *settingsButton;
     QPushButton *exitButton;
     QVBoxLayout *vbox;
-
+    MusicPlayer *_music;
     SettingWindow *settingWindow;
-    MusicPlayer *musicPlayer;
 
     int delay_;
 };
