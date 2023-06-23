@@ -10,7 +10,7 @@ class StyledWidget : public QWidget
 {
 public:
     StyledWidget(QWidget *parent);
-    QFont getFont() const;
+    QFont getFont(const int letterHeight = 40);
     QString getStyledButton() const;
     QString getBackGroundImage() const;
     int getWidth() const;

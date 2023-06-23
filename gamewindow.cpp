@@ -1,9 +1,16 @@
 #include "gamewindow.h"
 
-GameWindow::GameWindow(const int delay, MusicPlayer *music, StyledWidget *parent) : StyledWidget(parent), _music(music), delay_(delay)
+GameWindow::GameWindow(const int delay, int choosingATopic, bool musicIsPlay, MusicPlayer *music, StyledWidget *parent) :
+    StyledWidget(parent),
+    _delay(delay),
+    defaultDelay(delay),
+    _music(music),
+    _musicIsPlay(musicIsPlay),
+    _choosingATopic(choosingATopic)
 {
+    score = new Score(this);
 
-    _music->playBackgroundGameWindowMusic();
+    score->checkDelay(delay);
 
     loadImages();
 
@@ -18,13 +25,15 @@ GameWindow::GameWindow(const int delay, MusicPlayer *music, StyledWidget *parent
     dots.push_back(QPoint(10, 11));
     dots.push_back(QPoint(10, 12));
 
-    locateMouse();
+    locateMouseAndMine();
 
     setCursor(Qt::BlankCursor);
 
     setWindowFlags(Qt::FramelessWindowHint);
 
-    timerID = startTimer(delay_);
+    timerID = startTimer(_delay);
+
+    timerThread = std::thread(&GameWindow::timer, this);
 
     this->show();
 }
@@ -33,6 +42,7 @@ GameWindow::~GameWindow()
 {
     delete gameOver;
     delete _music;
+    delete score;
 }
 
 void GameWindow::paintEvent(QPaintEvent * pe)
@@ -44,7 +54,12 @@ void GameWindow::paintEvent(QPaintEvent * pe)
     if (!isGameOver)
     {
         qp.drawImage(head * OBJECT_SIZE, headMap.value(current));
-        qp.drawImage(mouse  * OBJECT_SIZE, i_mouse);
+        qp.drawImage(mouse * OBJECT_SIZE, i_mouse);
+
+        if(_delay <= 100)
+        {
+            qp.drawImage(p_mine * OBJECT_SIZE, mine);
+        }
 
         for (const auto& dot : dots)
         {
@@ -57,9 +72,12 @@ void GameWindow::paintEvent(QPaintEvent * pe)
 
         this->close();
 
-        _music->stopBackgroundGameWindowMusic();
+        score->close();
 
-        gameOver = new GameOver(delay_, _music);
+        _music->stopBackgroundActionMusic();
+        _music->stopBackgroundFunMusic();
+
+        gameOver = new GameOver(defaultDelay, _choosingATopic, _musicIsPlay, _music);
     }
 }
 
@@ -104,6 +122,59 @@ void GameWindow::keyPressEvent(QKeyEvent *ke)
     }
 
     QWidget::keyPressEvent(ke);
+}
+
+QPoint GameWindow::gettingCoordinates() const
+{
+    int x, y;
+    bool nCheck = false;
+
+    while (!nCheck)
+    {
+        int counter = 0;
+        x = mt19937(random_device{}())() % (WIDTH / OBJECT_SIZE);
+        y = mt19937(random_device{}())() % (HEIGHT / OBJECT_SIZE);
+
+        if(head.x() != x || head.y() != y)
+        {
+            for (const auto& dot : dots)
+            {
+                if(dot.y() != y || dot.x() != x)
+                {
+                    ++counter;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        if (counter == dots.size())
+        {
+            nCheck = true;
+        }
+    }
+
+    return QPoint(x, y);
+}
+
+void GameWindow::timer()
+{
+    while (true)
+    {
+        if(_delay <= 200 && _delay > 100)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(5));
+            locateMouseAndMine();
+        }
+        else if(_delay <= 100)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            locateMouseAndMine();
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 }
 
 void GameWindow::moveHead()
@@ -174,7 +245,9 @@ void GameWindow::moveTail()
     int y = head.y();
 
     for (int i = dots.size() - 1; i > 0; i--)
+    {
         dots.replace(i, QPoint(dots.at(i - 1).x(), dots.at(i - 1).y()));
+    }
 
     dots.replace(0, QPoint(x, y));
 }
@@ -182,6 +255,7 @@ void GameWindow::moveTail()
 void GameWindow::loadImages()
 {
     i_mouse.load(":/new/icons/mouse.png");
+    mine.load(":/new/icons/mine.png");
     snakeBody.load(":/new/icons/body.png");
     snakeHeadUp.load(":/new/icons/snakeHeadUp.png");
     snakeHeadDown.load(":/new/icons/snakeHeadDown.png");
@@ -189,6 +263,7 @@ void GameWindow::loadImages()
     snakeHeadRight.load(":/new/icons/snakeHeadRight.png");
 
     i_mouse = i_mouse.scaled(OBJECT_SIZE, OBJECT_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    mine = mine.scaled(OBJECT_SIZE, OBJECT_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     snakeBody = snakeBody.scaled(OBJECT_SIZE - 10, OBJECT_SIZE - 10, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     snakeHeadUp = snakeHeadUp.scaled(OBJECT_SIZE, OBJECT_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     snakeHeadDown = snakeHeadDown.scaled(OBJECT_SIZE, OBJECT_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -196,48 +271,59 @@ void GameWindow::loadImages()
     snakeHeadRight = snakeHeadRight.scaled(OBJECT_SIZE, OBJECT_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 }
 
-void GameWindow::locateMouse()
+void GameWindow::locateMouseAndMine()
 {
-    int x, y;
+    auto coordinates = gettingCoordinates();
+
+    mouse.setX(coordinates.x());
+    mouse.setY(coordinates.y());
+
     bool nCheck = false;
 
-    while (!nCheck)
+    if(_delay <= 100)
     {
-        int counter = 0;
-        x = mt19937(random_device{}())() % (WIDTH / OBJECT_SIZE);
-        y = mt19937(random_device{}())() % (HEIGHT / OBJECT_SIZE);
-
-        if(head.x() != x || head.y() != y)
+        while(!nCheck)
         {
-            for (const auto& dot : dots)
-            {
-                if(dot.y() != y || dot.x() != x)
-                {
-                    ++counter;
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
+           coordinates = gettingCoordinates();
 
-        if (counter == dots.size())
-        {
-            nCheck = true;
+            if(mouse.x() != coordinates.x() || mouse.y() != coordinates.y())
+           {
+                p_mine.setX(coordinates.x());
+                p_mine.setY(coordinates.y());
+                nCheck = true;
+           }
         }
     }
-
-    mouse.setX(x);
-    mouse.setY(y);
 }
 
 void GameWindow::checkMouse()
 {
     if (head.x() == mouse.x() && head.y() == mouse.y())
     {
+        if(_musicIsPlay)
+        {
+           _music->playEatSound();
+        }
+
+        score->add();
+        killTimer(timerID);
+
+        if(_delay <= 300 && _delay > 200)
+        {
+           timerID = startTimer(_delay -= 10);
+        }
+        else if(_delay <= 200 && _delay > 100)
+        {
+          timerID = startTimer(_delay -= 5);
+        }
+        else
+        {
+          timerID = startTimer(_delay -= 1);
+        }
+
+        score->checkDelay(_delay);
         dots.push_back(tail);
-        locateMouse();
+        locateMouseAndMine();
     }
 }
 
@@ -249,5 +335,10 @@ void GameWindow::checkCollision()
         {
             isGameOver = true;
         }
+    }
+
+    if(head.x() == p_mine.x() && head.y() == p_mine.y() && _delay <= 100)
+    {
+        isGameOver = true;
     }
 }

@@ -1,59 +1,67 @@
 #include "gameover.h"
 
-GameOver::GameOver(const int delay, MusicPlayer *music, StyledWidget* parent) : StyledWidget(parent), _music(music), delay_(delay)
+GameOver::GameOver(const int delay, int choosingATopic,  bool musicIsPlay, MusicPlayer *music, StyledWidget* parent) :
+    StyledWidget(parent),
+    _music(music),
+    _musicIsPlay(musicIsPlay),
+    _choosingATopic(choosingATopic),
+    _delay(delay)
 {
-    _music->playGameOverSound();
+    if(musicIsPlay)
+    {
+        _music->playGameOverSound();
+    }
 
-	QTimer::singleShot(1, this, &GameOver::showNextLetter);
+    QTimer::singleShot(1, this, &GameOver::showNextLetter);
 
-	setCursor(Qt::BlankCursor);
+    setCursor(Qt::BlankCursor);
 
-	setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint);
 
-	this->show();
+    this->show();
 }
 
 GameOver::~GameOver()
 {
-	delete welcomeWindow;
+    delete mainWindow;
     delete _music;
 }
 
 void GameOver::paintEvent(QPaintEvent* pe)
 {
-	Q_UNUSED(pe);
+    Q_UNUSED(pe);
 
-	QPainter qp(this);
+    QPainter qp(this);
 
-	qp.setPen(Qt::red);
-	qp.setFont(this->getFont());
+    qp.setPen(Qt::red);
+    qp.setFont(this->getFont());
 
-	for (int i = 0; i < current_letter_index_; i++)
-	{
-
-		qp.drawText(50 + 60 * i, this->getHeight() / 2, QString(GAME_OVER_STR.at(i)));
-	}
+    for (int i = 0; i < current_letter_index_; i++)
+    {
+        qp.drawText(50 + 60 * i, this->getHeight() / 2, QString(GAME_OVER_STR.at(i)));
+    }
 }
 
 void GameOver::showNextLetter()
 {
-	current_letter_index_++;
-	update();
+    current_letter_index_++;
+    update();
 
-	if (current_letter_index_ <= GAME_OVER_STR.size())
-	{
-		QTimer::singleShot(DELAY_GAME_OVER_STR, this, &GameOver::showNextLetter);
-	}
-	else
-	{
+    if (current_letter_index_ <= GAME_OVER_STR.size())
+    {
+        QTimer::singleShot(DELAY_GAME_OVER_STR, this, &GameOver::showNextLetter);
+    }
+    else
+    {
         this_thread::sleep_for(chrono::milliseconds(1500));
 
-		this->hide();
+        this->hide();
 
         _music->stopGameOverSound();
+        
+        _music->playBackgroundFunMusic();
 
-        _music->playBackgroundWelcomeWindowMusic();
-
-        welcomeWindow = new WelcomeWindow(delay_, _music);
-	}
+        mainWindow = new MainWindow(_delay, _music, _choosingATopic, _musicIsPlay);
+        mainWindow->show();
+    }
 }

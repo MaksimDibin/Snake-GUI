@@ -1,55 +1,59 @@
-
 #include "settingwindow.h"
-#include "welcomewindow.h"
+#include "ui_settingwindow.h"
+#include "mainwindow.h"
 
-WelcomeWindow *welcomeWindow;
+MainWindow *mainWindow;
 
-SettingWindow::SettingWindow(const int delay, MusicPlayer *music, StyledWidget *parent) : StyledWidget(parent), delay_(delay), _music(music)
+SettingWindow::SettingWindow(const int delay, int choosingATopic, bool musicIsPlay, MusicPlayer *music, StyledWidget *parent) :
+    StyledWidget(parent),
+    ui(new Ui::SettingWindow),
+    _music(music),
+    _musicIsPlay(musicIsPlay),
+    _choosingATopic(choosingATopic),
+    _delay(delay)
 {
-    setDelay(delay);
+    ui->setupUi(this);
 
-    QFont font(this->getFont());
+    ui->label->setStyleSheet("color: red;");
+    ui->label_2->setStyleSheet("color: red;");
+    ui->label_3->setStyleSheet("color: red;");
+    ui->level->setStyleSheet("background-color: grey; color: red;");
+    ui->theme->setStyleSheet("background-color: grey; color: red;");
+    ui->apply->setStyleSheet("QPushButton { border: none; color: red; } QPushButton:hover { color: green; }");
 
-    text = new QLabel("Выбор сложности:", this);
-    text->setFont(font);
-    text->setStyleSheet("color: red;");
-
-    difficultyComboBox = new QComboBox(this);
-    difficultyComboBox->setFont(font);
-    difficultyComboBox->setFocusPolicy(Qt::ClickFocus);
-    difficultyComboBox->setStyleSheet("background-color: grey; color: red;");
-    difficultyComboBox->addItem("Легко");
-    difficultyComboBox->addItem("Средне");
-    difficultyComboBox->addItem("Сложно");
-
-    if (delay_ == easyLevel)
+    if (_delay == easyLevel)
     {
-        difficultyComboBox->setCurrentIndex(0);
+        ui->level->setCurrentIndex(0);
     }
-    else if (delay_ == middleLevel)
+    else if (_delay == middleLevel)
     {
-        difficultyComboBox->setCurrentIndex(1);
+        ui->level->setCurrentIndex(1);
     }
-    else if (delay_ == hardleLevel)
+    else if (_delay == hardleLevel)
     {
-        difficultyComboBox->setCurrentIndex(2);
+        ui->level->setCurrentIndex(2);
     }
 
-    applyButton = new QPushButton("Применить", this);
-    applyButton->setFont(font);
-    applyButton->setFocusPolicy(Qt::ClickFocus);
-    applyButton->setStyleSheet("QPushButton { border: none; color: red; } QPushButton:hover { color: green; }");
-    connect(applyButton, &QPushButton::clicked, this, &SettingWindow::onApplyButtonClicked);
+    if(_choosingATopic == 0)
+    {
+        ui->theme->setCurrentIndex(0);
+    }
+    else
+    {
+        ui->theme->setCurrentIndex(1);
+    }
 
-    vbox = new QVBoxLayout(this);
-    vbox->addWidget(text);
-    vbox->addWidget(difficultyComboBox);
-    vbox->addWidget(applyButton);
-
-    vbox->setAlignment(Qt::AlignCenter);
+    if(_musicIsPlay)
+    {
+        ui->checkBox->setCheckState(Qt::Checked);
+    }
+    else
+    {
+        ui->checkBox->setCheckState(Qt::Unchecked);
+    }
 
     QPixmap cursorPixmap(":/new/icons/cursor.png");
-    QCursor customCursor(cursorPixmap.scaled(35, 35));
+    QCursor customCursor(cursorPixmap.scaled(25, 25, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     setCursor(customCursor);
 
     setWindowFlags(Qt::FramelessWindowHint);
@@ -59,30 +63,44 @@ SettingWindow::SettingWindow(const int delay, MusicPlayer *music, StyledWidget *
 
 SettingWindow::~SettingWindow()
 {
-    delete applyButton;
-    delete text;
-    delete vbox;
-    delete difficultyComboBox;
-    delete welcomeWindow;
+    delete ui;
+    delete mainWindow;
     delete _music;
 }
 
 int SettingWindow::getDelay() const
 {
-    return delay_;
+    return _delay;
 }
 
 void SettingWindow::setDelay(const int delay)
 {
-    delay_ = delay;
+    _delay = delay;
 }
 
-void SettingWindow::onApplyButtonClicked()
+int SettingWindow::getChoosingATopic() const
 {
+    return _choosingATopic;
+}
 
-    difficultyComboBox = this->findChild<QComboBox*>();
+void SettingWindow::setChoosingATopic(const int choosingATopic)
+{
+    _choosingATopic = choosingATopic;
+}
 
-    QString currentText = difficultyComboBox->currentText();
+int SettingWindow::getMusicIsPlay() const
+{
+    return _musicIsPlay;
+}
+
+void SettingWindow::setMusicIsPlay(const bool musicIsPla)
+{
+    _musicIsPlay = musicIsPla;
+}
+
+void SettingWindow::on_apply_clicked()
+{
+    QString currentText = ui->level->currentText();
 
     if (currentText == "Легко")
     {
@@ -97,7 +115,43 @@ void SettingWindow::onApplyButtonClicked()
         setDelay(hardleLevel);
     }
 
+    currentText = ui->theme->currentText();
+
+    if(currentText == "Весёлая")
+    {
+        setChoosingATopic(0);
+        _music->stopBackgroundActionMusic();
+        _music->playBackgroundFunMusic();
+    }
+    else
+    {
+        setChoosingATopic(1);
+        _music->stopBackgroundFunMusic();
+        _music->playBackgroundActionMusic();
+    }
+
+    bool checked = ui->checkBox->isChecked();
+
+    if(!checked)
+    {
+        _musicIsPlay = checked;
+    }
+    else
+    {
+        _musicIsPlay = checked;
+        if(getChoosingATopic() == 0)
+        {
+            _music->playBackgroundFunMusic();
+        }
+        else
+        {
+            _music->playBackgroundActionMusic();
+        }
+    }
+
     this->close();
 
-    welcomeWindow = new WelcomeWindow(getDelay(), _music);
+    mainWindow = new MainWindow(getDelay(), _music, _choosingATopic, _musicIsPlay);
+
+    mainWindow->show();
 }

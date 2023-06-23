@@ -11,22 +11,22 @@ public:
     explicit MusicPlayer();
     ~MusicPlayer();
 
-    void playBackgroundWelcomeWindowMusic();
-    void playBackgroundGameWindowMusic();
+    void playBackgroundFunMusic();
+    void playBackgroundActionMusic();
     void playEatSound();
     void playGameOverSound();
-    void stopBackgroundWelcomeWindowMusic();
-    void stopBackgroundGameWindowMusic();
+    void stopBackgroundFunMusic();
+    void stopBackgroundActionMusic();
     void stopEatSound();
     void stopGameOverSound();
 
 private:
-    QMediaPlayer *m_backgroundWelcomeWindowMusic;
-    QMediaPlayer *m_backgroundGameWindowMusic;
+    QMediaPlayer *m_funMusic;
+    QMediaPlayer *m_actionMusic;
     QMediaPlayer *m_eatSound;
     QMediaPlayer *m_gameOverSound;
-    QAudioOutput *audioOutputWelcome;
-    QAudioOutput *audioOutputGame;
+    QAudioOutput *audioFunMusic;
+    QAudioOutput *audioActionMusic;
     QAudioOutput *audioOutputEat;
     QAudioOutput *audioOutputGameOver;
 };

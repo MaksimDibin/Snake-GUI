@@ -14,12 +14,13 @@ QMAKE_CXXFLAGS += -std=c++17
 SOURCES += \
         gameover.cpp \
         gamewindow.cpp \
+    leaderboard.cpp \
         main.cpp \
+        mainwindow.cpp \
         musicplayer.cpp \
-        setting.cpp \
+    score.cpp \
         settingwindow.cpp \
         styledwidget.cpp \
-        welcomewindow.cpp
 
 CONFIG += lrelease
 CONFIG += embed_translations
@@ -32,15 +33,19 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     gameover.h \
     gamewindow.h \
+    leaderboard.h \
+    mainwindow.h \
     musicplayer.h \
-    setting.h \
+    score.h \
     settingwindow.h \
     styledwidget.h \
-    welcomewindow.h
 
 RESOURCES += \
     resources.qrc
 
 FORMS += \
-    setting.ui
+    leaderboard.ui \
+    mainwindow.ui \
+    score.ui \
+    settingwindow.ui
 

@@ -1,16 +1,17 @@
 #include <QApplication>
-#include "welcomewindow.h"
 #include "musicplayer.h"
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     MusicPlayer* music = new MusicPlayer();
+    
+    music->playBackgroundFunMusic();
 
-    music->playBackgroundWelcomeWindowMusic();
-
-    WelcomeWindow welcomeWindow(300, music);
+    MainWindow mainWindow(300, music);
+    mainWindow.show();
 
     return app.exec();
 }

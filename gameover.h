@@ -7,9 +7,9 @@
 #include <QPainter>
 #include <chrono>
 #include <thread>
-#include "welcomewindow.h"
 #include "styledwidget.h"
 #include "musicplayer.h"
+#include "mainwindow.h"
 
 using namespace std;
 
@@ -17,7 +17,7 @@ class GameOver : public StyledWidget
 {
 
 public:
-   explicit GameOver(const int delay, MusicPlayer *music = nullptr, StyledWidget *parent = nullptr);
+   explicit GameOver(const int delay, int choosingATopic = 0, bool musicIsPlay = true, MusicPlayer *music = nullptr, StyledWidget *parent = nullptr);
     ~GameOver();
 
 protected:
@@ -30,11 +30,13 @@ private:
     static const int DELAY_GAME_OVER_STR = 150;
     const QString GAME_OVER_STR = "Game Over";
 
-    WelcomeWindow *welcomeWindow;
+    MainWindow *mainWindow;
     MusicPlayer *_music;
 
     int current_letter_index_ = 0;
-    int delay_;
+    bool _musicIsPlay;
+    int _choosingATopic;
+    int _delay;
 };
 
 #endif // GAMEOVER_H

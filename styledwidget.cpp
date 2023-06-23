@@ -1,7 +1,8 @@
 
 #include "styledwidget.h"
 
-StyledWidget::StyledWidget(QWidget *parent) : QWidget(parent)
+StyledWidget::StyledWidget(QWidget *parent) :
+    QWidget(parent)
 {
     this->setFixedSize(WIDTH, HEIGHT);
 
@@ -10,12 +11,12 @@ StyledWidget::StyledWidget(QWidget *parent) : QWidget(parent)
     this->setPalette(palette);
 }
 
-QFont StyledWidget::getFont() const
+QFont StyledWidget::getFont(const int letterHeight)
 {
     int fontID = QFontDatabase::addApplicationFont(":/new/fonts/FerdinandFont-Regular.ttf");
     QStringList fontFamilies = QFontDatabase::applicationFontFamilies(fontID);
 
-    QFont font(fontFamilies.at(0), 40, QFont::Bold  );
+    QFont font(fontFamilies.at(0), letterHeight, QFont::Bold  );
 
     return font;
 }
